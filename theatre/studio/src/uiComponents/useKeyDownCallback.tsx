@@ -1,4 +1,5 @@
 import {useEffect, useRef} from 'react'
+import {getStudioDocument, getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 type AcceptableCombo = 'Shift' | 'Meta' | 'Control' | 'Alt'
 
@@ -25,13 +26,16 @@ export default function useKeyDownCallback(
       refs.current.listener({down: false, event: undefined})
     }
 
-    document.addEventListener('keydown', onKeyDown)
-    document.addEventListener('keyup', onKeyUp)
-    window.addEventListener('blur', onBlur)
+    const studioDoc = getStudioDocument()
+    const studioWin = getStudioWindow()
+
+    studioDoc.addEventListener('keydown', onKeyDown)
+    studioDoc.addEventListener('keyup', onKeyUp)
+    studioWin.addEventListener('blur', onBlur)
     return () => {
-      document.removeEventListener('keydown', onKeyDown)
-      document.removeEventListener('keyup', onKeyUp)
-      window.removeEventListener('blur', onBlur)
+      studioDoc.removeEventListener('keydown', onKeyDown)
+      studioDoc.removeEventListener('keyup', onKeyUp)
+      studioWin.removeEventListener('blur', onBlur)
     }
   }, [])
 }

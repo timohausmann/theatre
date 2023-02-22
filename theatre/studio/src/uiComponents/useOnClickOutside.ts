@@ -1,5 +1,6 @@
 import type {$IntentionalAny} from '@theatre/shared/utils/types'
 import {useEffect} from 'react'
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 export default function useOnClickOutside(
   container: Element | null | (Element | null)[],
@@ -23,12 +24,14 @@ export default function useOnClickOutside(
       }
     }
 
-    window.addEventListener('mousedown', onMouseDown, {
+    const studioWin = getStudioWindow()
+
+    studioWin.addEventListener('mousedown', onMouseDown, {
       capture: true,
       passive: false,
     })
     return () => {
-      window.removeEventListener('mousedown', onMouseDown, {
+      studioWin.removeEventListener('mousedown', onMouseDown, {
         capture: true,
         passive: false,
       } as unknown as $IntentionalAny)

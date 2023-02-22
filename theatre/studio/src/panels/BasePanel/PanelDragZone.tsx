@@ -9,6 +9,7 @@ import {panelDimsToPanelPosition, usePanel} from './BasePanel'
 import {useCssCursorLock} from '@theatre/studio/uiComponents/PointerEventsHandler'
 import {clamp} from 'lodash-es'
 import {minVisibleSize} from './common'
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 const Container = styled.div`
   cursor: move;
@@ -32,6 +33,7 @@ const PanelDragZone: React.FC<
         let tempTransaction: CommitOrDiscard | undefined
 
         const unlock = panelStuff.addBoundsHighlightLock()
+        const studioWin = getStudioWindow()
 
         return {
           onDrag(dx, dy) {
@@ -40,17 +42,17 @@ const PanelDragZone: React.FC<
               top: clamp(
                 stuffBeforeDrag.dims.top + dy,
                 0,
-                window.innerHeight - minVisibleSize,
+                studioWin.innerHeight - minVisibleSize,
               ),
               left: clamp(
                 stuffBeforeDrag.dims.left + dx,
                 -stuffBeforeDrag.dims.width + minVisibleSize,
-                window.innerWidth - minVisibleSize,
+                studioWin.innerWidth - minVisibleSize,
               ),
             }
             const position = panelDimsToPanelPosition(newDims, {
-              width: window.innerWidth,
-              height: window.innerHeight,
+              width: studioWin.innerWidth,
+              height: studioWin.innerHeight,
             })
 
             tempTransaction?.discard()

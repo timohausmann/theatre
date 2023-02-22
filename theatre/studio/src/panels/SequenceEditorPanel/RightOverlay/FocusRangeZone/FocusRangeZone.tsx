@@ -21,6 +21,7 @@ import styled from 'styled-components'
 import FocusRangeStrip, {focusRangeStripTheme} from './FocusRangeStrip'
 import FocusRangeThumb from './FocusRangeThumb'
 import {minVisibleSize} from '@theatre/studio/panels/BasePanel/common'
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 const Container = styled.div<{isShiftDown: boolean}>`
   position: absolute;
@@ -182,6 +183,7 @@ function usePanelDragZoneGestureHandlers(
           const stuffBeforeDrag = panelStuffRef.current
 
           const unlock = panelStuffRef.current.addBoundsHighlightLock()
+          const studioWin = getStudioWindow()
 
           return {
             onDrag(dx, dy) {
@@ -190,17 +192,17 @@ function usePanelDragZoneGestureHandlers(
                 top: clamp(
                   stuffBeforeDrag.dims.top + dy,
                   0,
-                  window.innerHeight - minVisibleSize,
+                  studioWin.innerHeight - minVisibleSize,
                 ),
                 left: clamp(
                   stuffBeforeDrag.dims.left + dx,
                   -stuffBeforeDrag.dims.width + minVisibleSize,
-                  window.innerWidth - minVisibleSize,
+                  studioWin.innerWidth - minVisibleSize,
                 ),
               }
               const position = panelDimsToPanelPosition(newDims, {
-                width: window.innerWidth,
-                height: window.innerHeight,
+                width: studioWin.innerWidth,
+                height: studioWin.innerHeight,
               })
 
               tempTransaction?.discard()

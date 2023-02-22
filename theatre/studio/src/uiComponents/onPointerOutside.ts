@@ -1,3 +1,5 @@
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
+
 /**
  * Calls the callback when the mouse pointer moves outside the
  * bounds of the node.
@@ -20,9 +22,11 @@ export default function onPointerOutside(
     }
   }
 
-  window.addEventListener('mousemove', onMouseMove)
+  const studioWin = getStudioWindow()
+
+  studioWin.addEventListener('mousemove', onMouseMove)
 
   return () => {
-    window.removeEventListener('mousemove', onMouseMove)
+    studioWin.removeEventListener('mousemove', onMouseMove)
   }
 }

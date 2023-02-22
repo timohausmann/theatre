@@ -10,6 +10,7 @@ import {panelDimsToPanelPosition, usePanel} from './BasePanel'
 import {pointerEventsAutoInNormalMode} from '@theatre/studio/css'
 import {clamp} from 'lodash-es'
 import {minVisibleSize} from './common'
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 const Base = styled.div`
   position: absolute;
@@ -156,6 +157,8 @@ const PanelResizeHandle: React.FC<{
         const stuffBeforeDrag = panelStuffRef.current
         const unlock = panelStuff.addBoundsHighlightLock()
 
+        const studioWin = getStudioWindow()
+
         return {
           onDrag(dx, dy) {
             const newDims: typeof panelStuff['dims'] = {
@@ -174,7 +177,7 @@ const PanelResizeHandle: React.FC<{
                 0,
                 Math.min(
                   bottom - stuffBeforeDrag.minDims.height,
-                  window.innerHeight - minVisibleSize,
+                  studioWin.innerHeight - minVisibleSize,
                 ),
               )
               const height = bottom - top
@@ -188,7 +191,7 @@ const PanelResizeHandle: React.FC<{
                 newDims.left + dx,
                 Math.min(
                   right - stuffBeforeDrag.minDims.width,
-                  window.innerWidth - minVisibleSize,
+                  studioWin.innerWidth - minVisibleSize,
                 ),
               )
               const width = right - left
@@ -206,8 +209,8 @@ const PanelResizeHandle: React.FC<{
             }
 
             const position = panelDimsToPanelPosition(newDims, {
-              width: window.innerWidth,
-              height: window.innerHeight,
+              width: studioWin.innerWidth,
+              height: studioWin.innerHeight,
             })
 
             tempTransaction?.discard()

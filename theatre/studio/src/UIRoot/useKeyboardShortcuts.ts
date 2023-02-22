@@ -8,6 +8,7 @@ import {Atom, prism, val} from '@theatre/dataverse'
 import type {IPlaybackRange} from '@theatre/core/sequences/Sequence'
 import type Sequence from '@theatre/core/sequences/Sequence'
 import memoizeFn from '@theatre/shared/utils/memoizeFn'
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 let playPauseKeyboardShortcutIsEnabled = true
 export function __experimental_disblePlayPauseKeyboardShortcut() {
@@ -154,9 +155,12 @@ export default function useKeyboardShortcuts() {
       e.preventDefault()
       e.stopPropagation()
     }
-    window.addEventListener('keydown', handleKeyDown)
+
+    const studioWin = getStudioWindow()
+
+    studioWin.addEventListener('keydown', handleKeyDown)
     return () => {
-      window.removeEventListener('keydown', handleKeyDown)
+      studioWin.removeEventListener('keydown', handleKeyDown)
     }
   }, [])
 }

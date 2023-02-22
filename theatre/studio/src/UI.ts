@@ -12,7 +12,7 @@ export default class UI {
   readonly containerEl = document.createElement('div')
   private _rendered = false
   private _renderTimeout: NodeJS.Timer | undefined = undefined
-  private _documentBodyUIIsRenderedIn: HTMLElement | undefined = undefined
+  public _windowUIIsRenderedIn: Window | undefined = undefined
   readonly containerShadow: ShadowRoot & HTMLElement
 
   constructor(readonly studio: Studio) {
@@ -64,8 +64,15 @@ export default class UI {
         return
       }
       this._renderTimeout = undefined
-      this._documentBodyUIIsRenderedIn = document.body
-      this._documentBodyUIIsRenderedIn.appendChild(this.containerEl)
+
+      const popupWindow = window.open(
+        'about:blank',
+        'studioWindow',
+        'width=800,height=600',
+      )
+      this._windowUIIsRenderedIn = popupWindow || window
+
+      this._windowUIIsRenderedIn.document.body.appendChild(this.containerEl)
       ReactDOM.render(React.createElement(UIRoot), this.containerShadow)
     }
     this._renderTimeout = setTimeout(renderCallback, 10)

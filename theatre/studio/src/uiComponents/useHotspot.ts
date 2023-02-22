@@ -1,9 +1,11 @@
 import {useEffect, useState} from 'react'
+import {getStudioDocument} from '@theatre/studio/utils/getStudioRoot'
 
 export default function useHotspot(spot: 'left' | 'right') {
   const [active, setActive] = useState(false)
 
   useEffect(() => {
+    const studioDoc = getStudioDocument()
     const hoverListener = (e: MouseEvent) => {
       const threshold = active ? 200 : 50
 
@@ -22,17 +24,17 @@ export default function useHotspot(spot: 'left' | 'right') {
         setActive(false)
       }
     }
-    document.addEventListener('mousemove', hoverListener)
+    studioDoc.addEventListener('mousemove', hoverListener)
 
     const leaveListener = () => {
       setActive(false)
     }
 
-    document.addEventListener('mouseleave', leaveListener)
+    studioDoc.addEventListener('mouseleave', leaveListener)
 
     return () => {
-      document.removeEventListener('mousemove', hoverListener)
-      document.removeEventListener('mouseleave', leaveListener)
+      studioDoc.removeEventListener('mousemove', hoverListener)
+      studioDoc.removeEventListener('mouseleave', leaveListener)
     }
   }, [active])
 

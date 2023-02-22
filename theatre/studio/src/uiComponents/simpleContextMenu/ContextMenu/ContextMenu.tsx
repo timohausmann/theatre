@@ -9,6 +9,7 @@ import {height as itemHeight} from './Item'
 import {PortalContext} from 'reakit'
 import useOnKeyDown from '@theatre/studio/uiComponents/useOnKeyDown'
 import BaseMenu from './BaseMenu'
+import {getStudioWindow} from '@theatre/studio/utils/getStudioRoot'
 
 /**
  * How far from the menu should the pointer travel to auto close the menu
@@ -90,10 +91,12 @@ const ContextMenu: React.FC<ContextMenuProps> = (props) => {
       }
     }
 
-    window.addEventListener('mousemove', onMouseMove)
+    const studioWin = getStudioWindow()
+
+    studioWin.addEventListener('mousemove', onMouseMove)
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove)
+      studioWin.removeEventListener('mousemove', onMouseMove)
     }
   }, [rect, container, props.clickPoint, windowSize, props.onRequestClose])
   const portalLayer = useContext(PortalContext)

@@ -6,6 +6,10 @@ import {usePointerCapturing} from '@theatre/studio/UIRoot/PointerCapturing'
 import noop from '@theatre/shared/utils/noop'
 import {isSafari} from './isSafari'
 import useRefAndState from '@theatre/studio/utils/useRefAndState'
+import {
+  getStudioDocument,
+  getStudioWindow,
+} from '@theatre/studio/utils/getStudioRoot'
 
 export enum MouseButton {
   Left = 0,
@@ -246,9 +250,11 @@ export default function useDrag(
     const dragEndHandler = (e: MouseEvent) => {
       removeDragListeners()
       if (!stateRef.current.domDragStarted) return
+      const studioDoc = getStudioDocument()
+      const studioWin = getStudioWindow()
       const dragHappened = stateRef.current.detection.detected
       stateRef.current = {domDragStarted: false}
-      if (opts.shouldPointerLock && !isSafari) document.exitPointerLock()
+      if (opts.shouldPointerLock && !isSafari) studioDoc.exitPointerLock()
       callbacksRef.current.onDragEnd(dragHappened)
 
       // ensure that the window is focused after a successful drag
@@ -258,7 +264,7 @@ export default function useDrag(
       // of the drag.
       //
       // Fixes https://linear.app/theatre/issue/P-177/beginners-scrubbing-the-playhead-from-within-an-iframe-then-[space]
-      window.focus()
+      studioWin.focus()
 
       if (!dragHappened) {
         callbacksRef.current.onClick(e)
@@ -267,14 +273,16 @@ export default function useDrag(
     }
 
     const addDragListeners = () => {
-      document.addEventListener('mousemove', dragHandler)
-      document.addEventListener('mouseup', dragEndHandler)
+      const studioDoc = getStudioDocument()
+      studioDoc.addEventListener('mousemove', dragHandler)
+      studioDoc.addEventListener('mouseup', dragEndHandler)
     }
 
     const removeDragListeners = () => {
+      const studioDoc = getStudioDocument()
       capturedPointerRef.current?.release()
-      document.removeEventListener('mousemove', dragHandler)
-      document.removeEventListener('mouseup', dragEndHandler)
+      studioDoc.removeEventListener('mousemove', dragHandler)
+      studioDoc.removeEventListener('mouseup', dragEndHandler)
     }
 
     const preventUnwantedClick = (event: MouseEvent) => {
